@@ -64,6 +64,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("""
             select a.id as id, a.slug as slug, a.title as title from Article a
             where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<Article> findAllEntityBasic(String tittle);
+
+    @Query("""
+            select a.id as id, a.slug as slug, a.title as title from Article a
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
     List<Tuple> findAllTupleBasic(String tittle);
 
     @Query("""

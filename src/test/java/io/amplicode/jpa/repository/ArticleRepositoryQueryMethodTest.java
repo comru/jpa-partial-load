@@ -86,6 +86,15 @@ class ArticleRepositoryQueryMethodTest {
     }
 
     @Test
+    void entityBasic() {
+        var articles = articleRepository.findAllEntityBasic("tcp");
+        assertEquals(1, articles.size());
+
+        var articleBasic = articles.get(0);
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", articleBasic.getSlug());
+    }
+
+    @Test
     void tupleTupleBasic() {
         var articles = articleRepository.findAllTupleBasic("tcp");
         assertEquals(1, articles.size());

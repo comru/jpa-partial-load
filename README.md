@@ -59,7 +59,8 @@ entity Article {
    - ToMany просто дублирует строки
 6. Query method + Object Array
    - да тоже самое, что и tuple
-7. Specification и проблемы с EntityGraph и Projection
+7. Query method + Entity, вообще не работает 
+8. Specification и проблемы с EntityGraph и Projection
    - Не поддерживается  EntityGraph
    - Не поддерживаются Projections  
    - Не поддерживаются Slice
