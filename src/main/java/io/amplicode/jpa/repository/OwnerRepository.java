@@ -1,5 +1,8 @@
-package io.amplicode.jpa;
+package io.amplicode.jpa.repository;
 
+import io.amplicode.jpa.model.Owner;
+import io.amplicode.jpa.projection.OwnerDto;
+import io.amplicode.jpa.projection.OwnerProjection;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +21,6 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     @Query("select id, firstName, lastName from Owner")
     List<Object[]> findAllObjectArray();
 
-    @Query("select new io.amplicode.jpa.OwnerDto(id, firstName, lastName) from Owner")
+    @Query("select new io.amplicode.jpa.projection.OwnerDto(id, firstName, lastName) from Owner")
     List<OwnerDto> findAllQueryDto();
 }

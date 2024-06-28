@@ -1,0 +1,12 @@
+package io.amplicode.jpa.projection;
+
+/**
+ * Projection for {@link io.amplicode.jpa.model.Article}
+ */
+public interface ArticleBasic {
+    Long getId();
+
+    String getSlug();
+
+    String getTitle();
+}

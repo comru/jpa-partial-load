@@ -1,5 +1,8 @@
 package io.amplicode.jpa;
 
+import io.amplicode.jpa.model.Owner;
+import io.amplicode.jpa.model.Owner_;
+import io.amplicode.jpa.projection.OwnerDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;

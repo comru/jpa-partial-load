@@ -1,4 +1,6 @@
-package io.amplicode.jpa;
+package io.amplicode.jpa.projection;
+
+import io.amplicode.jpa.model.Owner;
 
 /**
  * DTO for {@link Owner}

@@ -1,4 +1,4 @@
-package io.amplicode.jpa;
+package io.amplicode.jpa.model;
 
 import jakarta.persistence.*;
 

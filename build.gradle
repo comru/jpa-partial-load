@@ -20,10 +20,12 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	annotationProcessor 'org.hibernate:hibernate-jpamodelgen:6.5.2.Final'
-	implementation 'jakarta.data:jakarta.data-api:1.0.0'
+//	implementation 'jakarta.data:jakarta.data-api:1.0.0'
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 tasks.named('test') {

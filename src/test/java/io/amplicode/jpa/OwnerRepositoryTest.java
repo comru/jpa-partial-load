@@ -1,5 +1,7 @@
 package io.amplicode.jpa;
 
+import io.amplicode.jpa.projection.OwnerDto;
+import io.amplicode.jpa.repository.OwnerRepository;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
