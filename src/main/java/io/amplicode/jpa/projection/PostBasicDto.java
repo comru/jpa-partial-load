@@ -5,5 +5,5 @@ import io.amplicode.jpa.model.Post;
 /**
  * DTO for {@link Post}
  */
-public record UserPresentationDto(Long id, String username) {
+public record PostBasicDto(Long id, String slug, String title) {
 }

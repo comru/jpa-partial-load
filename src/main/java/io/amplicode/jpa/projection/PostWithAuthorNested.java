@@ -1,9 +1,11 @@
 package io.amplicode.jpa.projection;
 
+import io.amplicode.jpa.model.Post;
+
 /**
- * Projection for {@link io.amplicode.jpa.model.Article}
+ * Projection for {@link Post}
  */
-public interface ArticleWithAuthorNested {
+public interface PostWithAuthorNested {
     Long getId();
 
     String getSlug();

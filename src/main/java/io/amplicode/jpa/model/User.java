@@ -3,9 +3,7 @@ package io.amplicode.jpa.model;
 import jakarta.persistence.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -33,20 +31,6 @@ public class User {
     @Lob
     @Column(name = "image")
     private byte[] image;
-
-    @ManyToMany
-    @JoinTable(name = "user_follows",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follow_user_id"))
-    private Set<User> follows = new LinkedHashSet<>();
-
-    public Set<User> getFollows() {
-        return follows;
-    }
-
-    public void setFollows(Set<User> follows) {
-        this.follows = follows;
-    }
 
     public byte[] getImage() {
         return image;

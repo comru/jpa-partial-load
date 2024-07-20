@@ -1,6 +1,6 @@
 package io.amplicode.jpa.repository;
 
-import io.amplicode.jpa.model.Article_;
+import io.amplicode.jpa.model.Post_;
 import io.amplicode.jpa.projection.*;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
@@ -12,82 +12,82 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class ArticleRepositoryQueryMethodTest {
+class PostRepositoryQueryMethodTest {
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private PostRepository postRepository;
 
     @Test
     void interfaceBasic() {
-        List<ArticleBasic> articles = articleRepository.findAllArticleBase("tcp");
+        List<PostBasic> articles = postRepository.findAllPostBase("tcp");
         assertEquals(1, articles.size());
 
-        ArticleBasic articleBasic = articles.get(0);
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", articleBasic.getSlug());
+        PostBasic postBasic = articles.get(0);
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", postBasic.getSlug());
     }
 
     @Test
     void interfaceToOneFlat() {
-        List<ArticleWithAuthorFlat> articles = articleRepository.findAllArticleWithAuthorFlat("tcp");
+        List<PostWithAuthorFlat> articles = postRepository.findAllPostWithAuthorFlat("tcp");
         assertEquals(1, articles.size());
 
-        ArticleWithAuthorFlat article = articles.get(0);
+        PostWithAuthorFlat article = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.getSlug());
         assertEquals("Maksim Esteban", article.getAuthorUsername());
     }
 
     @Test
     void interfaceToOneNested() {
-        var articles = articleRepository.findAllArticleWithAuthorNested("tcp");
+        var articles = postRepository.findAllPostWithAuthorNested("tcp");
         assertEquals(1, articles.size());
 
-        ArticleWithAuthorNested article = articles.get(0);
+        PostWithAuthorNested article = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.getSlug());
         assertEquals("Maksim Esteban", article.getAuthor().getUsername());
     }
 
     @Test
     void interfaceToMany() {
-        var articles = articleRepository.findAllArticleWithAuthorNested("tcp");
+        var articles = postRepository.findAllPostWithAuthorNested("tcp");
         assertEquals(1, articles.size());
 
-        ArticleWithAuthorNested article = articles.get(0);
+        PostWithAuthorNested article = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.getSlug());
         assertEquals("Maksim Esteban", article.getAuthor().getUsername());
     }
 
     @Test
     void classBasic() {
-        var articles = articleRepository.findAllArticleBasicDto("tcp");
+        var articles = postRepository.findAllPostBasicDto("tcp");
         assertEquals(1, articles.size());
 
-        ArticleBasicDto articleBasic = articles.get(0);
+        PostBasicDto articleBasic = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", articleBasic.slug());
     }
 
     @Test
     void classToOneFlat() {
-        var articles = articleRepository.findAllArticleWithAuthorFlatDto("tcp");
+        var articles = postRepository.findAllPostWithAuthorFlatDto("tcp");
         assertEquals(1, articles.size());
 
-        ArticleWithAuthorFlatDto article = articles.get(0);
+        PostWithAuthorFlatDto article = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.slug());
         assertEquals("Maksim Esteban", article.authorUsername());
     }
 
     @Test
     void classToOneNested() {
-        var articles = articleRepository.findAllArticleWithAuthorNestedDto("tcp");
+        var articles = postRepository.findAllPostWithAuthorNestedDto("tcp");
         assertEquals(1, articles.size());
 
-        ArticleWithAuthorNestedDto article = articles.get(0);
+        PostWithAuthorNestedDto article = articles.get(0);
         assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.slug());
-        assertEquals("Maksim Esteban", article.user().username());
+        assertEquals("Maksim Esteban", article.author().username());
     }
 
     @Test
     void entityBasic() {
-        var articles = articleRepository.findAllEntityBasic("tcp");
+        var articles = postRepository.findAllEntityBasic("tcp");
         assertEquals(1, articles.size());
 
         var articleBasic = articles.get(0);
@@ -96,36 +96,36 @@ class ArticleRepositoryQueryMethodTest {
 
     @Test
     void tupleTupleBasic() {
-        var articles = articleRepository.findAllTupleBasic("tcp");
+        var articles = postRepository.findAllTupleBasic("tcp");
         assertEquals(1, articles.size());
 
         Tuple article = articles.get(0);
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Article_.SLUG));
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Post_.SLUG));
     }
 
     @Test
     void tupleToOne() {
-        var articles = articleRepository.findAllTupleWithAuthor("tcp");
+        var articles = postRepository.findAllTupleWithAuthor("tcp");
         assertEquals(1, articles.size());
 
         var article = articles.get(0);
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Article_.SLUG));
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Post_.SLUG));
         assertEquals("Maksim Esteban", article.get("authorUsername"));
     }
 
     @Test
     void tupleToMany() {
-        var articles = articleRepository.findAllWithFavorited("tcp");
+        var articles = postRepository.findAllWithFavorited("tcp");
         assertEquals(1, articles.size());
 
         var article = articles.get(0);
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Article_.SLUG));
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Post_.SLUG));
 //        assertEquals("Maksim Esteban", article.get("authorUsername"));
     }
 
     @Test
     void objectBasic() {
-        var articles = articleRepository.findAllObjectBasic("tcp");
+        var articles = postRepository.findAllObjectArrayBasic("tcp");
         assertEquals(1, articles.size());
 
         var article = articles.get(0);
@@ -134,11 +134,11 @@ class ArticleRepositoryQueryMethodTest {
 
     @Test
     void objectToOne() {
-        var articles = articleRepository.findAllTupleWithAuthor("tcp");
+        var articles = postRepository.findAllTupleWithAuthor("tcp");
         assertEquals(1, articles.size());
 
         var article = articles.get(0);
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Article_.SLUG));
+        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", article.get(Post_.SLUG));
         assertEquals("Maksim Esteban", article.get("authorUsername"));
     }
 }

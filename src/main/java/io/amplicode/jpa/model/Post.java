@@ -7,8 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "articles")
-public class Article {
+@Table(name = "posts")
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,12 +23,6 @@ public class Article {
     @Column(name = "body", length = Integer.MAX_VALUE)
     private String body;
 
-    @ManyToMany
-    @JoinTable(name = "article_tags",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<Tag> tags = new LinkedHashSet<>();
-
     @Column(name = "created_at")
     private Instant createdAt;
 
@@ -36,16 +30,16 @@ public class Article {
     private Instant updatedAt;
 
     @ManyToMany
-    @JoinTable(name = "article_favorited",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "favorited_id"))
-    private Set<User> favorited = new LinkedHashSet<>();
+    @JoinTable(name = "post_like_users",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likeUsers = new LinkedHashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
 
-    public Article() {
+    public Post() {
 
     }
 
@@ -57,12 +51,12 @@ public class Article {
         this.author = author;
     }
 
-    public Set<User> getFavorited() {
-        return favorited;
+    public Set<User> getLikeUsers() {
+        return likeUsers;
     }
 
-    public void setFavorited(Set<User> favorited) {
-        this.favorited = favorited;
+    public void setLikeUsers(Set<User> likeUsers) {
+        this.likeUsers = likeUsers;
     }
 
     public Instant getUpdatedAt() {
@@ -79,14 +73,6 @@ public class Article {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
     }
 
     public String getBody() {
