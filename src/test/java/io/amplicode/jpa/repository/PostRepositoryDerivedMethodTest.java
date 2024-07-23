@@ -134,7 +134,7 @@ class PostRepositoryDerivedMethodTest {
     }
 
     /**
-     * Это не возможно, явно получаем ошибку `Cannot set field 'author' to instantiate 'io.amplicode.jpa.projection.ArticleWithAuthorNestedDto`
+     * Это не возможно, явно получаем ошибку `Cannot set field 'authorMap' to instantiate 'io.amplicode.jpa.projection.ArticleWithAuthorNestedDto`
      * о чем явно сказано в документации - https://docs.spring.io/spring-data/jpa/reference/repositories/projections.html#projections.dtos
      * These DTO types can be used in exactly the same way projection interfaces are used, except that no proxying happens and no nested projections can be applied.
      *

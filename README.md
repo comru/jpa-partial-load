@@ -3,35 +3,12 @@
 ### Содержание
 
 - [О проекте](#о-проекте)
+- [Интересует ли эта проблема сообщество](#интересует-ли-эта-проблема-сообщество)
 - [Задача](#задача)
 - [Тестовые данные](#тестовые-данные)
 - [Тестирование](#тестирование)
     - [Basic attributes](#basic-attributes)
-    - ToOne
-        1. Repository derived methods. Interface-based flat projections
-        2. Repository derived methods. Interface-based nested projections
-        3. Repository derived methods. Class-based flat projections
-        4. Repository derived methods. Class-based nested dto projections
-        5. Repository derived methods. Class-based nested entity projections
-        6. Repository query methods. Interface-based flat projections
-        7. Repository query methods. Interface-based nested projections
-        8. Repository query methods. Class-based flat projections
-        9. Repository query methods. Class-based nested projections
-        10. Repository query methods. Object Array
-        11. Repository query methods. Tuple
-        12. Repository query methods. Map (select new map)
-        13. Repository query methods. List (select new list)
-        14. Repository query methods. Custom mapper
-        15. Entity Manager. Object Array
-        16. Entity Manager. Tuple
-        17. Entity Manager. Class-based Projections (select new)
-        18. Entity Manager. Map (select new map)
-        19. Entity Manager. List (select new list)
-        20. Criteria API. Object Array
-        21. Criteria API. Tuple
-        22. Criteria API. Class-based Projections (select new)
-        23. Criteria API. Map (select new map)
-        24. Criteria API. List (select new list)
+    - [ToOne](#to-one)
     - ToMany
         1. Repository derived methods. Interface-based nested projections
         2. Repository derived methods. Class-based nested dto projections
@@ -73,15 +50,22 @@ Spring Data JPA & Hibernate включают в себя множество ин
 Существует еще проект [Jakarta Data](https://github.com/jakartaee/data), который активно развивается. Пока вышла только
 первая стабильная версия 1.0.0 и мы не будем его рассматривать в данном эксперименте.
 
+### Интересует ли эта проблема сообщество
+О да, еще как интересует! Для этого отправимся в путешествие на stackoverflow. Напишем в поиске тег [spring-data-jpa] и
+отсортируем по популярности вопросы. Мы увидим, что вопрос [Spring JPA selecting specific columns](https://stackoverflow.com/questions/22007341/spring-jpa-selecting-specific-columns)
+находится на шестом месте.
+И в этом проекте мы постараемся ответить на этот вопрос максимально полно. Наш обзор будет касаться не только загрузки
+базовых атрибутов, но мы также окунемся в мир ассоциаций JPA.
+
 ### Задача
 
 В данном проекте будет рассматриваться следующая модель данных:
 
 ```mermaid
 classDiagram
-    Article --> User: author
-    Article --> User: likeUsers
-    class Article {
+    Post --> User: author
+    Post --> User: likeUsers
+    class Post {
         Long id
         String slug
         String tittle
@@ -117,7 +101,7 @@ classDiagram
 
 ### Тестовые данные
 
-Создадим две записи Article c двумя подписчиками.
+Создадим две записи Post c двумя подписчиками и автором.
 
 ### Тестирование
 
@@ -149,13 +133,17 @@ ToMany, мог бы быть полезен при загрузке коллек
 #### Basic attributes
 Всего я нашел 18 способов частичной загрузки для кейса когда нам надо загрузить только basic attributes.
 Эти способы включают в себя разные подходы написания запроса:
+
 - Repository derived methods
 - Repository query methods
 - Entity Manager
 - Criteria API
 
-Тестовый класс в котором можно увидеть все тесты с комментариями - [BasicAttributesTest](/src/test/java/io/amplicode/jpa/repository/BasicAttributesTest.java).
-Поскольку проект находится в стадии разработки, могут дополняться или убираться методы, но в конечном варианте должны соответствовать следующему списку:
+Тестовый класс в котором можно увидеть все тесты с
+комментариями - [BasicAttributesTest](/src/test/java/io/amplicode/jpa/repository/BasicAttributesTest.java).
+Поскольку проект находится в стадии разработки, могут дополняться или убираться методы, но в конечном варианте должны
+соответствовать следующему списку:
+
 1. Repository derived methods. Interface-based projections
 2. Repository derived methods. Class-based projections
 3. Repository query methods. Interface-based projections
@@ -175,17 +163,51 @@ ToMany, мог бы быть полезен при загрузке коллек
 17. Criteria API. Class-based Projections (without select new)
 18. Criteria API. List
 
-### Выводы
-1. Выводы делайте сами
-2. Open source есть open source
-3. Если мы пишем HQL/JPQL query, то мы контролируем запрос и возвращаем только то что мы хотим. 
-Вопрос только в том как мапить.
-4. Если мы пишем HQL/JPQL всегда можно вернуть tuple и помапить с него на dto
-5. Использовать ли repository derived method, мне кажется нет, но решайте сами. В простых случаях и HQL будет простым, 
-в сложных длина имени метода будет стремиться выйти за приделы нашей солнечной системы.
-6. Когда мы работаем с Tuple очень удобно подключить библиотеку hibernate-jpamodelgen и использовать автогенеренные константы.
-В последней документации hibernate данный способ используется во всех примерах, можно сказать, что это тихая рекомендация.
+### To one
 
+Тестовый класс в котором можно увидеть все тесты с
+комментариями - [BasicAttributesTest](/src/test/java/io/amplicode/jpa/repository/ToOneTest.java).
+
+1. Repository derived methods. Interface-based flat projections
+2. Repository derived methods. Interface-based nested projections
+3. Repository derived methods. Class-based flat projections
+4. Repository derived methods. Class-based nested dto projections
+5. Repository derived methods. Class-based nested entity projections
+6. Repository query methods. Interface-based flat projections
+7. Repository query methods. Interface-based nested interface projections
+8. Repository query methods. Interface-based nested class projections
+9. Repository query methods. Class-based flat projections
+10. Repository query methods. Class-based nested class projections
+11. Repository query methods. Class-based nested map projections
+12. Repository query methods. Object Array
+13. Repository query methods. Tuple
+14. Repository query methods. Map (select new map)
+15. Repository query methods. List (select new list)
+16. Repository query methods. Custom mapper
+17. Entity Manager. Object Array
+18. Entity Manager. Tuple
+19. Entity Manager. Class-based Projections (select new)
+20. Entity Manager. Map (select new map)
+21. Entity Manager. List (select new list)
+22. Criteria API. Object Array
+23. Criteria API. Tuple
+24. Criteria API. Class-based Projections
+25. Criteria API. List (list)
+
+### Выводы
+
+1. Open source есть open source
+2. Если мы пишем HQL/JPQL query, то мы контролируем запрос и возвращаем только то что мы хотим.
+   Вопрос только в том как мапить.
+3. Если мы пишем HQL/JPQL всегда можно вернуть tuple и помапить с него на dto
+4. Использовать ли repository derived method, мне кажется нет, но решайте сами. В простых случаях и HQL будет простым,
+   в сложных длина имени метода будет стремиться выйти за приделы нашей солнечной системы.
+5. Когда мы работаем с Tuple очень удобно подключить библиотеку hibernate-jpamodelgen и использовать автогенеренные
+   константы.
+   В последней документации hibernate данный способ используется во всех примерах, можно сказать, что это тихая
+   рекомендация.
+6. Когда мы пишем Query в spring data и используем DTO, по дефолту будут валидироваться выражение с DTO,
+   будут проверены как типы, так и количество аргументов. А самое главное ни какой прокси магии.
 
 ### Built With
 
@@ -208,10 +230,16 @@ ToMany, мог бы быть полезен при загрузке коллек
 ```
 
 ### TODO
+
 - Надо ли рассматривать Embedded?
 - Надо ли рассматривать JPA Specification и его проблемы?
 - Надо ли рассматривать Pagination?
 - Кастом мапинг, кажется вообще не работает. Надо ли об этом говорить?
-org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from type [org.springframework.data.jpa.repository.query.AbstractJpaQuery$TupleConverter$TupleBackedMap] to type [io.amplicode.jpa.projection.PostBasicDto]
-В классе org.springframework.data.repository.query.ResultProcessor.ProjectingConverter в котором и происходит конвертация resultType
-есть ConversionService, но всегда инициализируется как DefaultConversionService.getSharedInstance() и его не очень то и пополнишь(
+  org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from
+  type [org.springframework.data.jpa.repository.query.AbstractJpaQuery$TupleConverter$TupleBackedMap] to
+  type [io.amplicode.jpa.projection.PostBasicDto]
+  В классе org.springframework.data.repository.query.ResultProcessor.ProjectingConverter в котором и происходит
+  конвертация resultType
+  есть ConversionService, но всегда инициализируется как DefaultConversionService.getSharedInstance() и его не очень то
+  и пополнишь(
+- Как правильно называется способ писать запрос на основе имени метода - "Repository derived methods"? 
