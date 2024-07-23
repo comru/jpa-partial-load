@@ -11,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class InitTestDataService {
         post1.setCreatedAt(Instant.now());
         post1.setUpdatedAt(Instant.now());
         post1.setAuthor(esteban);
-        post1.setLikeUsers(Set.of(esteban, sokolowski));
+        post1.setLikeUsers(new LinkedHashSet<>(List.of(esteban, sokolowski)));
 
         Post post2 = new Post();
         post2.setTitle("quantifying the circuit wont do anything, we need to parse the back-end FTP interface!");

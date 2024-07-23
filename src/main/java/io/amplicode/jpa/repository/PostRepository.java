@@ -75,14 +75,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<PostWithAuthorFlat> findAllPostWithAuthorFlat(String tittle);
 
     @Query("""
-            select a.id as id, a.slug as slug, a.title as title, a.author.id as authorId, a.author.username as authorUsername from Post a
-            where lower(a.title) like lower(concat('%', ?1, '%'))""")
-    List<PostWithAuthorNested> findAllPostWithAuthorNested(String tittle);
-
-    @Query("""
             select a.id as id, a.slug as slug, a.title as title, new io.amplicode.jpa.projection.UserPresentationDto(a.author.id, a.author.username) from Post a
             where lower(a.title) like lower(concat('%', ?1, '%'))""")
     List<PostWithAuthorClass> findAllPostWithAuthorClass(String tittle);
+
+    @Query("""
+            select a.id as id, a.slug as slug, a.title as title, a.author.id as authorId, a.author.username as authorUsername from Post a
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<PostWithAuthorNested> findAllPostWithAuthorNested(String tittle);
 
     @Query("""
             select new io.amplicode.jpa.projection.PostWithAuthorFlatDto(a.id, a.slug, a.title, a.author.id, a.author.username) from Post a
@@ -119,6 +119,36 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
     //--------- to many load -----------
+
+    @Query("""
+            select a.id as id, a.slug as slug, a.title as title, lu.id as likeUsersId, lu.username as likeUsersUsername from Post a
+            left join a.likeUsers lu
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<PostWithLikeUsersAsFlat> findInterfaceFlatPrj(String tittle);
+
+    @Query("""
+            select new io.amplicode.jpa.projection.PostWithLikeUsersDto(a.id, a.slug, a.title, lu.id, lu.username) from Post a
+            left join a.likeUsers lu
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<PostWithLikeUsersDto > findToManyClassFlat(String tittle);
+
+    @Query("""
+            select new io.amplicode.jpa.projection.PostWithLikeUsersNestedDto(
+                a.id,
+                a.slug,
+                a.title,
+                new io.amplicode.jpa.projection.UserPresentationDto(lu.id, lu.username)
+            ) from Post a
+            left join a.likeUsers lu
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<PostWithLikeUsersNestedDto> findToManyClassNested(String tittle);
+
+    @Query("""
+            select a.id as id, a.slug as slug, a.title as title, lu.id as likeUserId, lu.username as likeUserUsername from Post a
+            left join a.likeUsers lu
+            where lower(a.title) like lower(concat('%', ?1, '%'))""")
+    List<Tuple> findToManyTuple(String tittle);
+
     @Query("""
             select a.id as id, a.slug as slug, a.title as title, f.username as favoritedUsername from Post a
             left join a.likeUsers f

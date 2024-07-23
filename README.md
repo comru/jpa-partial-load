@@ -9,27 +9,7 @@
 - [Тестирование](#тестирование)
     - [Basic attributes](#basic-attributes)
     - [ToOne](#to-one)
-    - ToMany
-        1. Repository derived methods. Interface-based nested projections
-        2. Repository derived methods. Class-based nested dto projections
-        3. Repository derived methods. Class-based nested entity projections
-        4. Repository query methods. Interface-based nested projections
-        5. Repository query methods. Class-based nested projections
-        6. Repository query methods. Object Array
-        7. Repository query methods. Tuple
-        8. Repository query methods. Map (select new map)
-        9. Repository query methods. List (select new list)
-        10. Repository query methods. Custom mapper
-        11. Entity Manager. Object Array
-        12. Entity Manager. Tuple
-        13. Entity Manager. Class-based Projections (select new)
-        14. Entity Manager. Map (select new map)
-        15. Entity Manager. List (select new list)
-        16. Criteria API. Object Array
-        17. Criteria API. Tuple
-        18. Criteria API. Class-based Projections (select new)
-        19. Criteria API. Map (select new map)
-        20. Criteria API. List (select new list)
+    - [ToMany](#to-many)
 - [Выводы](#выводы)
 - [Getting Started](#getting-started)
 - [Built With](#built-with)
@@ -144,26 +124,28 @@ ToMany, мог бы быть полезен при загрузке коллек
 Поскольку проект находится в стадии разработки, могут дополняться или убираться методы, но в конечном варианте должны
 соответствовать следующему списку:
 
-1. Repository derived methods. Interface-based projections
-2. Repository derived methods. Class-based projections
-3. Repository query methods. Interface-based projections
-4. Repository query methods. Class-based projections
-5. Repository query methods. Object Array
-6. Repository query methods. Tuple
-7. Repository query methods. Map (select new map)
-8. Repository query methods. List (select new list)
-9. Entity Manager. Object Array
-10. Entity Manager. Tuple
-11. Entity Manager. Class-based Projections (select new)
-12. Entity Manager. Map (select new map)
-13. Entity Manager. List (select new list)
-14. Criteria API. Object Array
-15. Criteria API. Tuple
-16. Criteria API. Class-based Projections (with select new)
-17. Criteria API. Class-based Projections (without select new)
-18. Criteria API. List
+1. Repository derived methods. Interface-based nested interface projections
+2. Repository derived methods. Interface-based flat projections
+3. Repository derived methods. Class-based flat projections
+4. Repository query methods. Interface-based projections
+5. Repository query methods. Class-based flat projections
+6. Repository query methods. Class-based nested projections
+7. Repository query methods. Object Array
+8. Repository query methods. Tuple
+9. Repository query methods. Map (select new map)
+10. Repository query methods. List (select new list)
+11. Entity Manager. Object Array
+12. Entity Manager. Tuple
+13. Entity Manager. Class-based Projections (select new)
+14. Entity Manager. Map (select new map)
+15. Entity Manager. List (select new list)
+16. Criteria API. Object Array
+17. Criteria API. Tuple
+18. Criteria API. Class-based Projections (with select new)
+19. Criteria API. Class-based Projections (without select new)
+20. Criteria API. List
 
-### To one
+#### To one
 
 Тестовый класс в котором можно увидеть все тесты с
 комментариями - [BasicAttributesTest](/src/test/java/io/amplicode/jpa/repository/ToOneTest.java).
@@ -194,6 +176,29 @@ ToMany, мог бы быть полезен при загрузке коллек
 24. Criteria API. Class-based Projections
 25. Criteria API. List (list)
 
+#### To many
+
+1. Repository derived methods. Interface-based nested projections
+2. Repository derived methods. Class-based nested dto projections
+3. Repository derived methods. Class-based nested entity projections
+4. Repository query methods. Interface-based nested projections
+5. Repository query methods. Class-based nested projections
+6. Repository query methods. Object Array
+7. Repository query methods. Tuple
+8. Repository query methods. Map (select new map)
+9. Repository query methods. List (select new list)
+10. Repository query methods. Custom mapper
+11. Entity Manager. Object Array
+12. Entity Manager. Tuple
+13. Entity Manager. Class-based Projections (select new)
+14. Entity Manager. Map (select new map)
+15. Entity Manager. List (select new list)
+16. Criteria API. Object Array
+17. Criteria API. Tuple
+18. Criteria API. Class-based Projections (select new)
+19. Criteria API. Map (select new map)
+20. Criteria API. List (select new list)
+
 ### Выводы
 
 1. Open source есть open source
@@ -208,6 +213,7 @@ ToMany, мог бы быть полезен при загрузке коллек
    рекомендация.
 6. Когда мы пишем Query в spring data и используем DTO, по дефолту будут валидироваться выражение с DTO,
    будут проверены как типы, так и количество аргументов. А самое главное ни какой прокси магии.
+7. Не знаете что вернуть, верните Tuple. Это очень удобно 
 
 ### Built With
 

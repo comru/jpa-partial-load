@@ -5,8 +5,9 @@ import io.amplicode.jpa.model.Post;
 /**
  * DTO for {@link Post}
  */
-public record PostWithFavoritedDto(Long id,
+public record PostWithLikeUsersDto(Long id,
                                    String slug,
                                    String title,
-                                   Object likeUsers) {
+                                   Long likeUsersId,
+                                   String likeUsersUsername) {
 }

@@ -168,7 +168,7 @@ class PostRepositoryDerivedMethodTest {
      */
     @Test
     void classToOneNestedToMany() {
-        List<PostWithFavoritedDto> articles = postRepository.findAllByTitleContainsIgnoreCase("tcp", PostWithFavoritedDto.class);
+        List<PostWithLikeUsersDto> articles = postRepository.findAllByTitleContainsIgnoreCase("tcp", PostWithLikeUsersDto.class);
         assertEquals(1, articles.size());
         var articleFirst = articles.get(0);
         assertEquals(POST1_SLUG, articleFirst.slug());
