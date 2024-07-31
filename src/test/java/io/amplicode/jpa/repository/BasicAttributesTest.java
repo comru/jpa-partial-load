@@ -36,7 +36,7 @@ class BasicAttributesTest {
      */
     @Test
     void derivedMethodInterfacePrj() throws Exception {
-        List<PostBasic> posts = postRepository.findAllByTitleContainsIgnoreCase("tcp", PostBasic.class);
+        List<PostBasic> posts = postRepository.findAllByTitleContainsIgnoreCase("spring", PostBasic.class);
         assertEquals(1, posts.size());
         var postFirst = posts.getFirst();
         Object targetObject = TestUtils.getProxyTargetObject(postFirst);
@@ -55,21 +55,20 @@ class BasicAttributesTest {
      */
     @Test
     void derivedMethodClassPrj() {
-        List<PostBasicDto> posts = postRepository.findAllByTitleContainsIgnoreCase("tcp", PostBasicDto.class);
+        List<PostBasicDto> posts = postRepository.findAllByTitleContainsIgnoreCase("spring", PostBasicDto.class);
         assertEquals(1, posts.size());
         assertEquals(POST1_SLUG, posts.getFirst().slug());
     }
 
     /**
-     * 1. В запросе надо обязательно писать алиасы для возвращаемых атрибутов в секции select, иначе чда не произойдет
+     * 1. В запросе надо обязательно писать алиасы для возвращаемых атрибутов в секции select, иначе чуда не произойдет
      * и в Tuple не окажется нужных нам полей доступных по константе.
      * 2. Как создается TupleBackedMap для query запроса, ведь это не hibernate функциональность? Создается он очень просто,
      * через spring converter org.springframework.data.jpa.repository.query.AbstractJpaQuery.TupleConverter.
-     * Можно ли написать собственный конвертер мы узнаем позже
      */
     @Test
     void queryMethodInterfacePrj() throws Exception {
-        List<PostBasic> posts = postRepository.findAllPostBase("tcp");
+        List<PostBasic> posts = postRepository.findAllPostBase("spring");
         assertEquals(1, posts.size());
         PostBasic postFirst = posts.getFirst();
         Object targetObject = TestUtils.getProxyTargetObject(postFirst);
@@ -77,7 +76,7 @@ class BasicAttributesTest {
                 "org.springframework.data.jpa.repository.query.AbstractJpaQuery$TupleConverter$TupleBackedMap",
                 targetObject.getClass().getName()
         );
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", postFirst.getSlug());
+        assertEquals(POST1_SLUG, postFirst.getSlug());
     }
 
     /**
@@ -86,21 +85,18 @@ class BasicAttributesTest {
      */
     @Test
     void queryMethodClassPrj() {
-        var posts = postRepository.findAllPostBasicDto("tcp");
+        var posts = postRepository.findAllPostBasicDto("spring");
         assertEquals(1, posts.size());
         PostBasicDto postBasic = posts.getFirst();
-        assertEquals(
-                "Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553",
-                postBasic.slug()
-        );
+        assertEquals(POST1_SLUG, postBasic.slug());
     }
 
     @Test
     void queryMethodObjectArray() {
-        var posts = postRepository.findAllObjectArrayBasic("tcp");
+        var posts = postRepository.findAllObjectArrayBasic("spring");
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post[1]);
+        assertEquals(POST1_SLUG, post[1]);
     }
 
     /**
@@ -112,26 +108,26 @@ class BasicAttributesTest {
      */
     @Test
     void queryMethodTuple() {
-        var posts = postRepository.findAllTupleBasic("tcp");
+        var posts = postRepository.findAllTupleBasic("spring");
         assertEquals(1, posts.size());
         Tuple post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(Post_.SLUG));
+        assertEquals(POST1_SLUG, post.get(Post_.SLUG));
     }
 
     @Test
     void queryMethodMap() {
-        var posts = postRepository.findAllMapBasic("tcp");
+        var posts = postRepository.findAllMapBasic("spring");
         assertEquals(1, posts.size());
         Map<String, Object> post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(Post_.SLUG));
+        assertEquals(POST1_SLUG, post.get(Post_.SLUG));
     }
 
     @Test
     void queryMethodList() {
-        var posts = postRepository.findAllListBasic("tcp");
+        var posts = postRepository.findAllListBasic("spring");
         assertEquals(1, posts.size());
         List<Object> post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(1));
+        assertEquals(POST1_SLUG, post.get(1));
     }
 
     @Test
@@ -139,11 +135,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select a.id as id, a.slug as slug, a.title as title from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", Object[].class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post[1]);
+        assertEquals(POST1_SLUG, post[1]);
     }
 
     @Test
@@ -151,11 +147,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select a.id as id, a.slug as slug, a.title as title from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", Tuple.class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(Post_.SLUG));
+        assertEquals(POST1_SLUG, post.get(Post_.SLUG));
     }
 
     @Test
@@ -163,11 +159,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select a.id, a.slug, a.title from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", PostBasicDto.class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.slug());
+        assertEquals(POST1_SLUG, post.slug());
     }
 
     @Test
@@ -175,11 +171,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select new io.amplicode.jpa.projection.PostBasicDto(a.id, a.slug, a.title) from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", PostBasicDto.class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.slug());
+        assertEquals(POST1_SLUG, post.slug());
     }
 
     @Test
@@ -187,11 +183,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select a.id as id, a.slug as slug, a.title as title from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", Map.class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(Post_.SLUG));
+        assertEquals(POST1_SLUG, post.get(Post_.SLUG));
     }
 
     @Test
@@ -199,11 +195,11 @@ class BasicAttributesTest {
         var posts = em.createQuery("""
                         select a.id as id, a.slug as slug, a.title as title from Post a
                         where lower(a.title) like lower(concat('%', ?1, '%'))""", List.class)
-                .setParameter(1, "tcp")
+                .setParameter(1, "spring")
                 .getResultList();
         assertEquals(1, posts.size());
         var post = posts.getFirst();
-        assertEquals("Ill-quantify-the-redundant-TCP-bus-that-should-hard-drive-the-ADP-bandwidth!-553", post.get(1));
+        assertEquals(POST1_SLUG, post.get(1));
     }
 
     @Test

@@ -21,7 +21,7 @@
 ### О проекте
 
 JPA часто предъявляют за невозможность загружать сущности частично, что на самом деле является большим заблуждением.
-Spring Data JPA & Hibernate включают в себя множество инструментов по частичной загрузке сущностей. В рамках доклада
+Spring Data JPA & Hibernate включают в себя множество инструментов по частичной загрузке сущностей. В рамках исследования
 рассмотрим имеющиеся в Spring Data JPA инструменты, разберем их особенности и посмотрим на corner case.
 Давайте попробуем рассмотреть все способы такой частичной загрузки сущностей. Рассмотрим на примере основых способов
 взаимодействия с Hibernate в Spring приложениях:
@@ -80,18 +80,18 @@ classDiagram
 
 Проверять результат мы будем в соответствующих тестах, результат запроса будут видны в консоли. Специальный анализ
 логов, который бы показывал что выбираются только те поля что мы хотим, я не писал. Просто смотрю в логи, какой sql
-генерирует hibernate
+генерирует hibernate.
 
 ### Тестовые данные
 
-Создадим две записи Post c двумя подписчиками и автором.
+Создадим две записи Post c двумя подписчиками и автором. Сервис в котором создаются и удаляются данные [InitTestDataService](/src/test/java/io/amplicode/jpa/InitTestDataService.java)
 
 ### Тестирование
 
 Под derived method будем понимать, запросы которые основаны на имени метода, т.е. без явного указания аннотации @Query.
 В данном случае, у нас есть всего один способ как мы можем указать какие атрибуты мы хотим загрузить,
 это [projection](https://docs.spring.io/spring-data/jpa/reference/repositories/projections.html). Но проекции бывают
-двух видов, основанные на интерфейсах (Interface-based Projections) и на классах (Class-based Projections). Еще есть,
+двух видов, основанные на интерфейсах (Interface-based Projections) и на классах (Class-based Projections DTOs). Еще есть,
 так
 называемые [Open Projections](https://docs.spring.io/spring-data/jpa/reference/repositories/projections.html#projections.interfaces.open),
 где значение гетеров интерфейсов могу высчитываться на основе SpEL выражения:
@@ -103,18 +103,19 @@ interface NamesOnly {
 }
 ```
 
-Их мы рассматривать не будет, т.к. в документации явно сказанно, что для них оптимизация запроса производиться не будет.
+Их мы рассматривать не будет, т.к. в документации явно сказано, что для них оптимизация запроса производиться не будет.
 Это действительно так, я проверил.
 > Spring Data cannot apply query execution optimizations in this case, because the SpEL expression could use any
 > attribute of the aggregate root.
 
 Также, для загрузки ToOne ассоциаций мы хотим проверить два варианта с flatten(плоскими) атрибутами и с nested(
-вложенным) классом. Для ToMany будем проверять только nested, flat не работает ни в каком виде. На практике flat для
-ToMany, мог бы быть полезен при загрузке коллекции одного атрибута, например id, но это ни как не поддерживается в
-проекциях.
+вложенным) классом. Для ToMany все устроенно чуть сложнее, там также может быть кейс с nested и flat, но сам hibernate не умеет мапить вложенные коллекции, он вернет плоские записи и нам самостоятельно придется их помапить.
+
+Важно, в тестах будут приведены только рабочие варианты, т.е. те которые успешно справляются с поставленной задачей, т.е. частичной загрузкой.
+Примеры в которых можно загрузить данные, но они выгружают больше данных чем нужно, рассматриваться не будут.
 
 #### Basic attributes
-Всего я нашел 18 способов частичной загрузки для кейса когда нам надо загрузить только basic attributes.
+Всего я нашел 17 способов частичной загрузки для кейса когда нам надо загрузить только basic attributes.
 Эти способы включают в себя разные подходы написания запроса:
 
 - Repository derived methods
@@ -127,96 +128,92 @@ ToMany, мог бы быть полезен при загрузке коллек
 Поскольку проект находится в стадии разработки, могут дополняться или убираться методы, но в конечном варианте должны
 соответствовать следующему списку:
 
-1. Repository derived methods. Interface-based nested interface projections
-2. Repository derived methods. Interface-based flat projections
-3. Repository derived methods. Class-based flat projections
-4. Repository query methods. Interface-based projections
-5. Repository query methods. Class-based flat projections
-6. Repository query methods. Class-based nested projections
-7. Repository query methods. Object Array
-8. Repository query methods. Tuple
-9. Repository query methods. Map (select new map)
-10. Repository query methods. List (select new list)
-11. Entity Manager. Object Array
-12. Entity Manager. Tuple
-13. Entity Manager. Class-based Projections (select new)
-14. Entity Manager. Map (select new map)
-15. Entity Manager. List (select new list)
-16. Criteria API. Object Array
-17. Criteria API. Tuple
-18. Criteria API. Class-based Projections (with select new)
-19. Criteria API. Class-based Projections (without select new)
-20. Criteria API. List
+1. Repository derived methods. Interface-based projections
+2. Repository derived methods. Class-based projections
+3. Repository query methods. Interface-based projections
+4. Repository query methods. Class-based projections
+5. Repository query methods. Object Array
+6. Repository query methods. Tuple
+7. Repository query methods. Map (select new map)
+8. Repository query methods. List (select new list)
+9. Entity Manager. Object Array
+10. Entity Manager. Tuple
+11. Entity Manager. Class-based Projections (select new)
+12. Entity Manager. Map (select new map)
+13. Entity Manager. List (select new list)
+14. Criteria API. Object Array
+15. Criteria API. Tuple
+16. Criteria API. Class-based Projections
+17. Criteria API. List
 
 #### To one
-
 Тестовый класс в котором можно увидеть все тесты с
-комментариями - [BasicAttributesTest](/src/test/java/io/amplicode/jpa/repository/ToOneTest.java).
+комментариями - [ToOneTest](/src/test/java/io/amplicode/jpa/repository/ToOneTest.java).
+
+Рассматриваются следующие кейсы:
 
 1. Repository derived methods. Interface-based flat projections
-2. Repository derived methods. Interface-based nested projections
+2. Repository derived methods. Interface-based nested projections. Это как раз тот случай когда запрос выполняется, но работает не правильно, т.е. загружает больше полей чем надо. 
 3. Repository derived methods. Class-based flat projections
-4. Repository derived methods. Class-based nested dto projections
-5. Repository derived methods. Class-based nested entity projections
-6. Repository query methods. Interface-based flat projections
-7. Repository query methods. Interface-based nested interface projections
-8. Repository query methods. Interface-based nested class projections
-9. Repository query methods. Class-based flat projections
-10. Repository query methods. Class-based nested class projections
-11. Repository query methods. Class-based nested map projections
-12. Repository query methods. Object Array
-13. Repository query methods. Tuple
-14. Repository query methods. Map (select new map)
-15. Repository query methods. List (select new list)
-16. Repository query methods. Custom mapper
-17. Entity Manager. Object Array
-18. Entity Manager. Tuple
-19. Entity Manager. Class-based Projections (select new)
-20. Entity Manager. Map (select new map)
-21. Entity Manager. List (select new list)
-22. Criteria API. Object Array
-23. Criteria API. Tuple
-24. Criteria API. Class-based Projections
-25. Criteria API. List (list)
+4. Repository query methods. Interface-based flat projections
+5. Repository query methods. Interface-based with nested dto class projections.
+6. Repository query methods. Class-based flat projections
+7. Repository query methods. Class-based nested class projections
+8. Repository query methods. Class-based nested map projections
+9. Repository query methods. Tuple
+10. Repository query methods. Map (select new map)
+11. Repository query methods. Object Array
+12. Repository query methods. List (select new list)
+13. Entity Manager. Class-based Projections (select new)
+14. Entity Manager. Tuple
+15. Entity Manager. Map (select new map)
+16. Entity Manager. Object Array
+17. Entity Manager. List (select new list)
+18. Criteria API. Tuple
+19. Criteria API. Class-based Projections
+20. Criteria API. Object Array
+21. Criteria API. List (list)
 
 #### To many
 
-1. Repository derived methods. Interface-based nested projections
-2. Repository derived methods. Class-based nested dto projections
-3. Repository derived methods. Class-based nested entity projections
-4. Repository query methods. Interface-based nested projections
+Тестовый класс в котором можно увидеть все тесты с
+комментариями - [ToManyTest](/src/test/java/io/amplicode/jpa/repository/ToManyTest.java).
+
+Рассматриваются следующие кейсы:
+
+1. Repository derived methods. Interface-based projections
+2. Repository derived methods. Class-based projections
+3. Repository query methods. Interface-based nested projections
+4. Repository query methods. Class-based flat projections
 5. Repository query methods. Class-based nested projections
 6. Repository query methods. Object Array
 7. Repository query methods. Tuple
 8. Repository query methods. Map (select new map)
 9. Repository query methods. List (select new list)
-10. Repository query methods. Custom mapper
-11. Entity Manager. Object Array
-12. Entity Manager. Tuple
-13. Entity Manager. Class-based Projections (select new)
-14. Entity Manager. Map (select new map)
-15. Entity Manager. List (select new list)
+10. Entity Manager. Class-based Projections (select new)
+11. Entity Manager. Tuple
+12. Entity Manager. Map (select new map)
+13. Entity Manager. Object Array
+14. Entity Manager. List (select new list)
+15. Criteria API. Tuple
 16. Criteria API. Object Array
-17. Criteria API. Tuple
-18. Criteria API. Class-based Projections (select new)
-19. Criteria API. Map (select new map)
-20. Criteria API. List (select new list)
+17. Criteria API. Class-based Projections
+18. Criteria API. List (select new list)
 
 ### Выводы
 
-1. Open source есть open source
-2. Если мы пишем HQL/JPQL query, то мы контролируем запрос и возвращаем только то что мы хотим.
+1. Если мы пишем HQL/JPQL query, то мы контролируем запрос и возвращаем только то что мы хотим.
    Вопрос только в том как мапить.
-3. Если мы пишем HQL/JPQL всегда можно вернуть tuple и помапить с него на dto
-4. Использовать ли repository derived method, мне кажется нет, но решайте сами. В простых случаях и HQL будет простым,
+2. Если мы пишем HQL/JPQL всегда можно вернуть tuple и помапить с него на dto
+3. Использовать ли repository derived method, мне кажется нет, но решайте сами. В простых случаях и HQL будет простым,
    в сложных длина имени метода будет стремиться выйти за приделы нашей солнечной системы.
-5. Когда мы работаем с Tuple очень удобно подключить библиотеку hibernate-jpamodelgen и использовать автогенеренные
+4. Когда мы работаем с Tuple очень удобно подключить библиотеку hibernate-jpamodelgen и использовать автогенеренные
    константы.
    В последней документации hibernate данный способ используется во всех примерах, можно сказать, что это тихая
    рекомендация.
-6. Когда мы пишем Query в spring data и используем DTO, по дефолту будут валидироваться выражение с DTO,
+5. Когда мы пишем Query в spring data и используем DTO, по дефолту будут валидироваться выражение с DTO,
    будут проверены как типы, так и количество аргументов. А самое главное ни какой прокси магии.
-7. Не знаете что вернуть, верните Tuple. Это очень удобно 
+6. Не знаете что вернуть, верните Tuple. Это очень удобно 
 
 ### Built With
 
@@ -239,7 +236,6 @@ ToMany, мог бы быть полезен при загрузке коллек
 ```
 
 ### TODO
-
 - Надо ли рассматривать Embedded?
 - Надо ли рассматривать JPA Specification и его проблемы?
 - Надо ли рассматривать Pagination?
