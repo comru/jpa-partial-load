@@ -218,7 +218,7 @@ public class ToOneTest {
         var authorUsernamePath = owner.get(Post_.AUTHOR).<String>get(User_.USERNAME);
 
         query.select(cb.tuple(idPath, slugPath, titlePath, authorIdPath, authorUsernamePath))
-                .where(cb.like(cb.lower(titlePath), "%tcp%"));
+                .where(cb.like(cb.lower(titlePath), "%spring%"));
 
         var resultList = em.createQuery(query).getResultList().stream()
                 .map(tuple -> new PostWithAuthorNestedDto(
@@ -255,7 +255,7 @@ public class ToOneTest {
         var authorUsernamePath = owner.get(Post_.AUTHOR).<String>get(User_.USERNAME);
 
         query.multiselect(idPath, slugPath, titlePath, authorIdPath, authorUsernamePath)
-                .where(cb.like(cb.lower(titlePath), "%tcp%"));
+                .where(cb.like(cb.lower(titlePath), "%spring%"));
 
         var resultList = em.createQuery(query).getResultList();
 
