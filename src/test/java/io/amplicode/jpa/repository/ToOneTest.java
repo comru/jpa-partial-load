@@ -8,6 +8,11 @@ import io.amplicode.jpa.model.User_;
 import io.amplicode.jpa.projection.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Tuple;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.criteria.CriteriaDefinition;
+import org.hibernate.query.criteria.JpaPath;
+import org.hibernate.query.criteria.JpaRoot;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -260,6 +265,73 @@ public class ToOneTest {
         var resultList = em.createQuery(query).getResultList();
 
         for (PostWithAuthorFlatDto post : resultList) {
+            assertEquals(POST1_SLUG, post.slug());
+            assertEquals(POST1_AUTHOR_NAME, post.authorUsername());
+        }
+    }
+
+    /**
+     * Hibernate 6.3 вводит вспомогательный класс CriteriaDefinition для уменьшения многословности запросов критериев.
+     * Наш пример для Tuple будет выглядеть так:
+     */
+    @Test
+    void criteriaDefinitionTuple() {
+        var query = new CriteriaDefinition<>(em, Tuple.class) {};
+        var owner = query.from(Post.class);
+
+        var idPath = owner.<Long>get(Post_.ID);
+        var slugPath = owner.<String>get(Post_.SLUG);
+        var titlePath = owner.<String>get(Post_.TITLE);
+        var authorPath = owner.get(Post_.AUTHOR);
+        var authorIdPath = authorPath.<Long>get(User_.ID);
+        var authorUsernamePath = authorPath.<String>get(User_.USERNAME);
+
+        query.where(query.like(query.lower(titlePath), "%spring%"))
+                .multiselect(idPath, slugPath, titlePath, authorIdPath, authorUsernamePath);
+
+        var resultList = em.createQuery(query).getResultList().stream()
+                .map(tuple -> new PostWithAuthorNestedDto(
+                        tuple.get(idPath),
+                        tuple.get(slugPath),
+                        tuple.get(titlePath),
+                        new UserPresentationDto(
+                                tuple.get(authorIdPath),
+                                tuple.get(authorUsernamePath)
+                        )
+                )).toList();
+
+        assertEquals(1, resultList.size());
+        for (var post : resultList) {
+            assertEquals(POST1_SLUG, post.slug());
+            assertEquals(POST1_AUTHOR_NAME, post.author().username());
+        }
+    }
+
+    /**
+     * Hibernate 6.3 вводит вспомогательный класс CriteriaDefinition для уменьшения многословности запросов критериев.
+     * Наш пример для DTO будет выглядеть так:
+     */
+    @Test
+    void criteriaDefinitionDto() {
+        var query = new CriteriaDefinition<>(em, PostWithAuthorFlatDto.class) {{
+            var owner = from(Post.class);
+
+            var titlePath = owner.<String>get(Post_.TITLE);
+            var authorPath = owner.get(Post_.AUTHOR);
+
+            multiselect(
+                    owner.get(Post_.ID),
+                    owner.get(Post_.SLUG),
+                    titlePath,
+                    authorPath.get(User_.ID),
+                    authorPath.get(User_.USERNAME)
+            ).where(like(lower(titlePath), "%spring%"));
+        }};
+
+        var resultList = em.createQuery(query).getResultList();
+
+        assertEquals(1, resultList.size());
+        for (var post : resultList) {
             assertEquals(POST1_SLUG, post.slug());
             assertEquals(POST1_AUTHOR_NAME, post.authorUsername());
         }
